@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Facebook can't do THAT!</title>
+	
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="assets/css/main.css" rel="stylesheet">
+</head>
+<body>
+	<header class="container-fluid">
+		<div class="container">
+			<img style="width:120px;" src="assets/img/weather_icon.png" alt="sunshine">
+			<h1>WeatherBook</h1>
+		</div>
+	</header>
+	
+	<div class="container">
+	
+		<div class="row">
+			<div class="col container-stuff">
+				<h2> Социална мрежа!</h2>
+				<p>Единствената социална мрежа, която не краде информация! :D</p>
+				<p style="font-size:0.1em">Поне за сега...</p>
+			</div>		
+		</div>
+
+		<div class="row">
+			<div class="col-7 container-stuff d-md-none d-lg-block" style="margin-right: 35px">
+				<img class="img-fluid" src="assets/img/family.jpg" alt="family on pickning">
+			</div>
+			
+			<div class="col container-stuff">
+				<form action="HelloWorldServlet" method="get">
+					<div class="form-group">
+						<label for="username">Потребител:</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+					          	<span class="input-group-text"><i class="fa fa-user"></i></span>
+					        </div>
+							<input class="form-control" type="text" name="username" placeholder="Потребител">
+						</div>
+					</div>
+					
+					<div class="form-group">						
+						<label for="password">Парола:</label>					
+						<div class="input-group">
+							<div class="input-group-prepend">
+				          		<span class="input-group-text"><i class="fa fa-lock"></i></span>
+					        </div>
+							<input class="form-control" type="password" name="password" placeholder="Парола">
+						</div>
+					</div>
+
+					<button type="submit" class="btn btn-primary">Влез</button>
+					<button type="button" class="btn btn-success pull-right" data-toggle="modal" data-target="#registerModal">Регистрация</button>
+				</form>
+			</div>
+		</div>
+		
+	</div>
+	
+	<!-- Modal -->
+	<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Регистрация на нов потребител</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="username">Потребител</label>
+							<input type="text" class="form-control" name="username" placeholder="Потребител">
+						</div>
+						<div class="form-group">
+							<label for="email">Email</label>
+							<input type="text" class="form-control" name="email" placeholder="example@gmail.com">
+						</div>
+						<div class="form-group">
+							<label for="password">Парола</label>
+							<input type="password" class="form-control" name="password" placeholder="Парола">
+						</div>
+						<div class="form-group">
+							<label for="password_confirm">Повтори парола</label>
+							<input type="password" class="form-control" name="password_confirm" placeholder="Парола">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outlibe-secondary" data-dismiss="modal">Затвори</button>
+					<button type="button" class="btn btn-success">Регистрация</button>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
