@@ -80,6 +80,8 @@ Mark the options:
     [ ] Java
 
     [ ] Javascript
+	
+	[ ] JPA (click on the error message download the newest version and add it)
 
 Click on  Dynamic web module
 
