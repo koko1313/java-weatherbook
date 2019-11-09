@@ -1,10 +1,14 @@
 package uni.fmi.masters.beans;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -29,6 +33,9 @@ public class UserBean {
 
 	@Column(name = "avatar", length = 255)
 	private String avatar;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	private List<CommentBean> comments;
 
 	public UserBean() {
 		// TODO Auto-generated constructor stub
@@ -86,6 +93,14 @@ public class UserBean {
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+	
+	public List<CommentBean> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<CommentBean> comments) {
+		this.comments = comments;
 	}
 
 }

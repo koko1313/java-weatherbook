@@ -1,11 +1,7 @@
 package uni.fmi.masters;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,7 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uni.fmi.masters.beans.CommentBean;
 import uni.fmi.masters.beans.UserBean;
+import uni.fmi.masters.repository.JPACommentRepository;
 import uni.fmi.masters.repository.JPAUserRepository;
 
 /**
@@ -46,10 +44,32 @@ public class HelloWorldServlet extends HttpServlet {
 			case "register":
 				registerUser(request, response);
 				break;
+			case "insertComment":
+				insertComment(request, response);
+				break;
 		}
 		
 	}
 	
+	private void insertComment(HttpServletRequest request, HttpServletResponse response) {
+		String city = request.getParameter("city");
+		String temp = request.getParameter("temp");
+		String comment = request.getParameter("comment");
+		String user = request.getParameter("user");
+		
+		JPAUserRepository jpaUser = new JPAUserRepository();
+		
+		CommentBean commentEntity = new CommentBean();
+		commentEntity.setCity(city);
+		commentEntity.setTemp(Double.parseDouble(temp));
+		commentEntity.setComment(comment);
+		commentEntity.setUser(jpaUser.findById(Integer.parseInt(user)));
+		
+		JPACommentRepository jpaComment = new JPACommentRepository();
+		
+		jpaComment.insert(commentEntity);
+	}
+
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -68,7 +88,6 @@ public class HelloWorldServlet extends HttpServlet {
 		if(password.equals(repeatPassword)) {
 			UserBean user = new UserBean(username, email, password);
 			
-			// if(insertUserIntoDatabase(user)) { the old way
 			if(repo.createUser(user)) {
 				request.setAttribute("user", user);
 				redirect("profile.jsp", request, response);
@@ -81,48 +100,6 @@ public class HelloWorldServlet extends HttpServlet {
 			redirect("error.jsp", request, response);
 		}		
 		
-	}
-	
-	private boolean insertUserIntoDatabase(UserBean user) {
-		Connection con = null;
-		
-		try {
-			con = openConnection();
-			String query = "INSERT INTO USER (USERNAME, PASSWORD, EMAIL) VALUES (?, ?, ?)";
-			PreparedStatement pst = con.prepareStatement(query);
-			
-			pst.setString(1, user.getUsername());
-			pst.setString(2, user.getPassword());
-			pst.setString(3, user.getEmail());
-			
-			int count = pst.executeUpdate();
-			
-			if(count > 0) {
-				return true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if(con != null) {
-					con.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		return false;
-	}
-	
-	private Connection openConnection() throws SQLException {
-		try {
-			Class.forName("org.h2.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		return DriverManager.getConnection("jdbc:h2:~/weatherBook", "sa", "");
 	}
 
 	private void redirect(String page, HttpServletRequest request, HttpServletResponse response) {
@@ -141,49 +118,21 @@ public class HelloWorldServlet extends HttpServlet {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		
-		// UserBean user = login(username, password); the old way
-		
 		UserBean user = repo.loginUser(username, password);
 		
 		if(user != null) {
 			request.setAttribute("user", user);
-			redirect("home.html", request, response);
+			
+			JPACommentRepository repo = new JPACommentRepository();
+			List<CommentBean> comments = repo.getAllCommentsByUser(user);
+			
+			request.setAttribute("comments", comments);
+			
+			redirect("home.jsp", request, response);
 		} else {			
 			request.setAttribute("message", "Wrong password information!");
 			redirect("error.jsp", request, response);
 		}
-	}
-
-	private UserBean login(String username, String password) {
-		Connection con = null;
-		ResultSet rs = null;
-		
-		try {
-			con=openConnection();
-			
-			String query = "SELECT ID, EMAIL, AVATAR FROM USER WHERE USERNAME = ? AND PASSWORD = ?";
-			
-			PreparedStatement pst = con.prepareStatement(query);
-			pst.setString(1, username);
-			pst.setString(2, password);
-			
-			rs = pst.executeQuery();
-			
-			if(rs.first()) {
-				UserBean user = new UserBean();
-				user.setUsername(username);
-				user.setEmail(rs.getString("email"));
-				user.setAvatar(rs.getString("avatar"));
-				user.setId(rs.getInt("ID"));
-				
-				return user;
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
 	}
 
 }

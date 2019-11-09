@@ -5,39 +5,20 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
-import javax.transaction.TransactionalException;
 
 import uni.fmi.masters.beans.UserBean;
 
-public class JPAUserRepository {
+public class JPAUserRepository extends BaseRepository<UserBean> {
 
-	// отвар€ connection с базата данни
-	public EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("UserPU"); // както сме го конфигурирали в persistanse.xml
-		return factory.createEntityManager();
+	public JPAUserRepository() {
+		super(UserBean.class);
 	}
 	
 	public boolean createUser(UserBean user) {
-		EntityManager em = getEntityManager();
-		
 		user.setPassword(hashMe(user.getPassword()));
 		
-		try {
-			em.getTransaction().begin();
-			em.persist(user);
-			em.getTransaction().commit();
-		} catch(TransactionalException e) {
-			em.getTransaction().rollback();
-			System.err.println(e.getMessage());
-			return false;
-		} finally {
-			em.close();
-		}
-		
-		return true;
+		return insert(user);
 	}
 	
 	public UserBean loginUser(String username, String password) {
